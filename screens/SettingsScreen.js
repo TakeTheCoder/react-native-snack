@@ -10,7 +10,7 @@ export default class SettingsScreen extends React.Component {
   render() {
     /* Go ahead and delete ExpoConfigView and replace it with your
      * content, we just wanted to give you a quick view of your config */
-     return <Text>Hello from settings</Text>
+     return <Text>Hello from settings bla bla</Text>
     // return <ExpoConfigView />;
   }
 }
