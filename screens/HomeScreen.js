@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  Button,
   TouchableOpacity,
   View
 } from "react-native";
@@ -13,9 +14,38 @@ import { WebBrowser } from "expo";
 
 import { MonoText } from "../components/StyledText";
 
+import Posts from "../components/posts";
+
+import SignUp from "../components/SignUp";
+
+import { createSwitchNavigator } from "react-navigation";
+
+// import fetchPosts from '../components/api';
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null
+  };
+
+  state = {
+    name: "",
+    password: ""
+  };
+
+  // componentDidMount() {
+  //   fetchPosts()
+  // }
+
+  // _login = () => {
+  //   onPress={() => this.props.navigation.navigate('Details')}
+  // }
+
+  handleInputNameChange = name => {
+    this.setState({ name });
+  };
+
+  handleInputPasswordChange = password => {
+    this.setState({ password });
   };
 
   render() {
@@ -26,17 +56,13 @@ export default class HomeScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}
         >
           <View style={styles.contentContainer1}>
-            <TextInput
-              style={[styles.contentContainer, styles.contentInput]}
-              placeholder="User name"
+            <Button
+              title="Login in"
+              onPress={() => this.props.navigation.navigate("Posts")}
             />
-            <TextInput
-              style={[
-                styles.contentContainer,
-                styles.contentInput,
-                styles.contentInput2
-              ]}
-              placeholder="Password"
+            <Button
+              title="Sign up"
+              onPress={() => this.props.navigation.navigate("SignUp")}
             />
           </View>
         </ScrollView>
