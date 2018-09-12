@@ -17,9 +17,9 @@ export default class SignUpScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text> Fill this form to sign up </Text>
-        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' />
-        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' />
-        <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' />
+        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' textContentType='emailAddress'/>
+        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true}/>
+        <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' secureTextEntry={true}/>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText} >Sign up</Text>
         </TouchableOpacity>
@@ -42,6 +42,7 @@ export default class SignUpScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 100,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginTop: 50,
+    marginTop: 20,
   },
   textInput: {
     width: 300,
