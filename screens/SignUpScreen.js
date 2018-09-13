@@ -50,7 +50,7 @@ export default class SignUpScreen extends React.Component {
       console.log(resp);
       const userToken = AsyncStorage.getItem('userToken');
       console.log(userToken)
-      this.props.navigation.navigate(userToken ? 'Login' : 'Auth')
+      this.props.navigation.navigate(userToken ? 'LogIn' : 'Auth')
       
     })
     .catch((error) => console.warn(error))
