@@ -21,11 +21,12 @@ export default class LogInScreen extends React.Component {
     }
   }
 
-  handleChangeEmail(text){
-    this.setState({email: text})
-  }
-  handleChangePassword(text){
-    this.setState({password: text})
+  handleChangeInput(text, field){
+    if(field === 'email'){
+      this.setState({email: text})
+    } else {
+      this.setState({password: text})
+    }
   }
 
   handleLogIn(){
@@ -46,13 +47,11 @@ export default class LogInScreen extends React.Component {
     }).then((resp) => resp.json())
     .then((resp) => {
       console.log(resp);
-      AsyncStorage.setItem('token', resp.token);
-      const isAuthenticated = this.props.navigation.getParam('isAuthenticated', true );
-      console.warn(isAuthenticated);
-      this.props.navigation.navigate('Posts', {isAuthenticated: isAuthenticated})
+      AsyncStorage.setItem('userToken', resp.token);
+      this.props.navigation.navigate('Home')
       
     })
-    .catch((error) => console.log(error))
+    .catch((error) => console.warn(error))
   }
 
   render(){
@@ -60,8 +59,8 @@ export default class LogInScreen extends React.Component {
       <View style={styles.container} >
         <Text> Log in here </Text>
 
-        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' autoCapitalize="none" textContentType='emailAddress' onChangeText={(text) => {this.handleChangeEmail(text)} } />
-        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleChangePassword(text)}} />
+        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' autoCapitalize="none" textContentType='emailAddress' onChangeText={(text) => {this.handleChangeInput(text, 'email')} } />
+        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleChangeInput(text, 'password')}} />
 
         <TouchableOpacity style={styles.button} onPress={() => {this.handleLogIn()}}>
           <Text style={styles.buttonText} >Log in</Text>
@@ -86,7 +85,8 @@ export default class LogInScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 130,
+    backgroundColor: 'white',
+    paddingTop: 130,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

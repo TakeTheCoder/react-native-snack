@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import AuthButtons from './navigation/AuthButtons';
+import AppNavigator from './navigation/AppNavigator';
 import HomeScreen from './screens/HomeScreen';
 
 export default class App extends React.Component {
@@ -22,7 +22,7 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-           <AuthButtons />
+           <AppNavigator />
         </View>
       );
     }

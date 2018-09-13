@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AsyncStorage,
   Image,
   Platform,
   ScrollView,
@@ -12,15 +13,62 @@ import {
 } from 'react-native';
 
 export default class SignUpScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      email: '', 
+      password: '',
+      password_confirmation: '',
+      first_name: '',
+      last_name: '',
+    }
+  }
+  handleInputChange(text, field){
+    this.setState({[field]: text})
+  }
+
+  handleSignUp(){
+  let data = JSON.stringify({
+      user: {
+        email: this.state.email,
+        password: this.state.password,
+        password_confirmationa: this.state.password_confirmation,
+        first_name: this.state.first_name,
+        last_name: this.state.last_name
+      }
+    })
+    
+    fetch('https://jquery-test-api-auth.herokuapp.com/auth/register',{
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: data,
+    }).then((resp) => resp.json())
+    .then((resp) => {
+      console.log(resp);
+      const userToken = AsyncStorage.getItem('userToken');
+      console.log(userToken)
+      this.props.navigation.navigate(userToken ? 'Login' : 'Auth')
+      
+    })
+    .catch((error) => console.warn(error))
+  }
 
   render(){
     return (
       <View style={styles.container}>
         <Text> Fill this form to sign up </Text>
-        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' textContentType='emailAddress'/>
-        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true}/>
-        <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' secureTextEntry={true}/>
-        <TouchableOpacity style={styles.button}>
+        <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' textContentType='emailAddress' onChangeText={(text) => {this.handleInputChange(text, 'email')}}/>
+        <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password')}}/>
+        <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password_confirmation')}}/>
+
+        <TextInput style={styles.textInput} placeholder="First Name" placeholderTextColor='#ffffff' onChangeText={(text) => {this.handleInputChange(text, 'first_name')}} />
+        <TextInput style={styles.textInput} placeholder="Last Name" placeholderTextColor='#ffffff' onChangeText={(text) => {this.handleInputChange(text, 'last_name')}}/>
+
+
+        <TouchableOpacity style={styles.button} onPress={() => {this.handleSignUp}}>
           <Text style={styles.buttonText} >Sign up</Text>
         </TouchableOpacity>
 
@@ -42,7 +90,8 @@ export default class SignUpScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
+    backgroundColor: 'white',
+    paddingTop: 100,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
