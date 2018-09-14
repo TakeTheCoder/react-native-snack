@@ -42,8 +42,9 @@ export default class PostsScreen extends React.Component{
       <View style={styles.container}>
         <Text>Here are your posts:</Text>
         <FlatList 
+        
         data={this.state.posts}
-        renderItem={({item}) => <Text >{item.id} - {item.title} - {item.body}</Text>}
+        renderItem={({item}) => <Text style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text>}
         />
        
       </View>
@@ -57,5 +58,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  flatListStyleItem: {
+    fontSize: 25,
+
   }
+
 })

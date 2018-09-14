@@ -21,6 +21,7 @@ export default class SignUpScreen extends React.Component {
       password_confirmation: '',
       first_name: '',
       last_name: '',
+      signupMistake: false,
     }
   }
   handleInputChange(text, field){
@@ -28,15 +29,15 @@ export default class SignUpScreen extends React.Component {
   }
 
   handleSignUp(){
-  let data = JSON.stringify({
+    let data = JSON.stringify({
       user: {
         email: this.state.email,
         password: this.state.password,
-        password_confirmationa: this.state.password_confirmation,
+        password_confirmation: this.state.password_confirmation,
         first_name: this.state.first_name,
         last_name: this.state.last_name
       }
-    })
+    });
     
     fetch('https://jquery-test-api-auth.herokuapp.com/auth/register',{
       method: "POST",
@@ -47,19 +48,25 @@ export default class SignUpScreen extends React.Component {
       body: data,
     }).then((resp) => resp.json())
     .then((resp) => {
-      console.log(resp);
-      const userToken = AsyncStorage.getItem('userToken');
-      console.log(userToken)
-      this.props.navigation.navigate(userToken ? 'LogIn' : 'Auth')
-      
+      console.warn(resp);
+      if (resp.errors){
+        this.setState({signupMistake: true})
+      } else{
+          AsyncStorage.setItem('userToken', resp.token);
+          this.props.navigation.navigate('LogIn', {newUserLogIn: true})
+      }  
     })
-    .catch((error) => console.warn(error))
+    .catch((error) => {
+      console.warn(error)
+    })
   }
 
   render(){
+    let massage = 'Fill this form to sign up:';
+    (this.state.signupMistake) ? massage = 'Ups, seem like you made a mistake. Try again' : massage
     return (
       <View style={styles.container}>
-        <Text> Fill this form to sign up </Text>
+        <Text> {massage} </Text>
         <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' textContentType='emailAddress' onChangeText={(text) => {this.handleInputChange(text, 'email')}}/>
         <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password')}}/>
         <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password_confirmation')}}/>
@@ -68,7 +75,7 @@ export default class SignUpScreen extends React.Component {
         <TextInput style={styles.textInput} placeholder="Last Name" placeholderTextColor='#ffffff' onChangeText={(text) => {this.handleInputChange(text, 'last_name')}}/>
 
 
-        <TouchableOpacity style={styles.button} onPress={() => {this.handleSignUp}}>
+        <TouchableOpacity style={styles.button} onPress={() => {this.handleSignUp()}}>
           <Text style={styles.buttonText} >Sign up</Text>
         </TouchableOpacity>
 

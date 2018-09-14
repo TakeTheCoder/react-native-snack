@@ -1,6 +1,6 @@
 import React from 'react';
-import { AsyncStorage } from "react-native";
 import {
+  AsyncStorage,
   Image,
   Platform,
   ScrollView,
@@ -18,15 +18,12 @@ export default class LogInScreen extends React.Component {
     this.state = {
       email: '',
       password: '',
+      loginMistake: false,
     }
   }
 
   handleChangeInput(text, field){
-    if(field === 'email'){
-      this.setState({email: text})
-    } else {
-      this.setState({password: text})
-    }
+    this.setState({[field]: text}) 
   }
 
   handleLogIn(){
@@ -44,20 +41,32 @@ export default class LogInScreen extends React.Component {
         "Content-Type": "application/json; charset=utf-8"
       },
       body: data,
-    }).then((resp) => resp.json())
+    }).then((resp) => {
+      return resp.json()
+      })
     .then((resp) => {
-      console.log(resp);
-      AsyncStorage.setItem('userToken', resp.token);
-      this.props.navigation.navigate('Home')
-      
+      console.warn(resp);
+      if (resp.errors){
+        this.setState({loginMistake: true})
+      } else{
+          AsyncStorage.setItem('userToken', resp.token);
+          this.props.navigation.navigate('App')
+      }
     })
-    .catch((error) => console.warn(error))
+    .catch((error) => {
+      console.warn(error)
+    })
   }
 
   render(){
+    
+    let massage = 'Log in here';
+    (this.props.navigation.getParam('newUserLogIn')) ? massage = 'You successufuly signed up, now you can log in' : massage;
+    (this.state.loginMistake) ? massage = 'Ups, seem like you made a mistake. Try again' : massage;
     return (
       <View style={styles.container} >
-        <Text> Log in here </Text>
+        <Text> {massage} </Text> :
+
 
         <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' autoCapitalize="none" textContentType='emailAddress' onChangeText={(text) => {this.handleChangeInput(text, 'email')} } />
         <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleChangeInput(text, 'password')}} />
