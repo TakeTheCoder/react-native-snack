@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   AsyncStorage,
-  Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -49,10 +46,14 @@ export default class LogInScreen extends React.Component {
       if (resp.errors){
         this.setState({loginMistake: true})
       } else{
-          AsyncStorage.setItem('userToken', resp.token);
+        let token = JSON.stringify(resp.token);
+        console.warn(token)
+        AsyncStorage.setItem('userToken', token);
+
+
           this.props.navigation.navigate('App')
       }
-    })
+    }).then(() => console.warn() )
     .catch((error) => {
       console.warn(error)
     })
@@ -66,8 +67,6 @@ export default class LogInScreen extends React.Component {
     return (
       <View style={styles.container} >
         <Text> {massage} </Text> :
-
-
         <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' autoCapitalize="none" textContentType='emailAddress' onChangeText={(text) => {this.handleChangeInput(text, 'email')} } />
         <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleChangeInput(text, 'password')}} />
 
@@ -82,14 +81,10 @@ export default class LogInScreen extends React.Component {
             onPress={() => this.props.navigation.navigate('SignUp')}
           />
         </View>
-        
-        
-       
       </View>
-      
+  
     )
   }
-
 }
 
 const styles = StyleSheet.create({

@@ -1,15 +1,11 @@
 import React from 'react';
 import {
-  Image,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
   Button,
   FlatList,
-  ListItem,
 } from 'react-native';
 
 export default class PostsScreen extends React.Component{
@@ -17,7 +13,6 @@ export default class PostsScreen extends React.Component{
     super(props);
     this.state = {
       posts: [],
-
     }
   }
 
@@ -39,29 +34,25 @@ export default class PostsScreen extends React.Component{
   
   render(){
     return(
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text>Here are your posts:</Text>
         <FlatList 
         
         data={this.state.posts}
         renderItem={({item}) => <Text style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text>}
         />
-       
-      </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 130,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   flatListStyleItem: {
     fontSize: 25,
-
   }
-
 })
