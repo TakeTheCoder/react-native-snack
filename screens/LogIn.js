@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Button, TextInput, View } from 'react-native';
+import { StyleSheet, Text, Button, TextInput, View, AsyncStorage } from 'react-native';
 
 
 export default class LogIn extends React.Component {
@@ -13,39 +13,46 @@ export default class LogIn extends React.Component {
   }
 
 
-  handleEmailChange(text){
-    this.setState({email:text})
+  handleEmailChange = email => {
+    this.setState({email})
   } 
 
 
-  handlePasswordChange(text){
-    this.setState({password:text})
+  handlePasswordChange = password => {
+    this.setState({password})
   }
 
 
-  handleLogIn(){
-    fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
+  handleLogIn = async () => {
+  const response = await fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
       { method: 'POST',
         headers: {'content-type':'application/json'},
         body: JSON.stringify({
           email: this.state.email,
-          password: this.state.passwrod
-      })
+          password: this.state.password
+      }),
       }
     )
-    .then(resp => {console.log(resp)})
-    .catch(error => {console.log(error)})
-    // this.props.navigation.navigate('Posts')
+    console.log(response)
+    if (response.ok) {
+      this.props.navigation.navigate('Posts')
+       return
+    }
+    const errMessage = await response.text()
+    this.setState({err: errMessage}) 
+  
   }
-
+  
 render() {
     return (
       <View>
       <Text style={styles.contentContainer1}>Hello from LogIn</Text>
+      <Text>{this.state.err}</Text>
       <Text>{this.state.email}</Text>
       <Text>{this.state.password}</Text>
-      <TextInput style={[styles.contentInput, styles.contentContainer]} keyboardType='email-address' onChangeText={text => {this.handleEmailChange(text)}} placeholder="E-mail" />
-      <TextInput style={[styles.contentInput, styles.contentContainer]} secureTextEntry={true} onChangeText={text => {this.handlePasswordChange(text)}} placeholder="Password" />
+      <TextInput style={[styles.contentInput, styles.contentContainer]} keyboardType='email-address' onChangeText={this.handleEmailChange} value={this.state.email}  placeholder="E-mail" />
+      <TextInput style={[styles.contentInput, styles.contentContainer]} secureTextEntry={true} onChangeText={this.handlePasswordChange}
+      value={this.state.password} placeholder="Password" />
       <Button title="Log in" onPress={() => this.handleLogIn()}/>
       <Button title="Home Screen" onPress={() => this.props.navigation.navigate('HomeScreen')} />
       </View>
