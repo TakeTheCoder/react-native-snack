@@ -10,6 +10,7 @@ export default class LogIn extends React.Component {
   state={
     email: '',
     password: '',
+    error: ''
   }
 
 
@@ -23,33 +24,38 @@ export default class LogIn extends React.Component {
   }
 
 
-  handleLogIn = async () => {
-  const response = await fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
+
+
+  handleLogIn() {
+    
+   fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
       { method: 'POST',
         headers: {'content-type':'application/json'},
-        body: JSON.stringify({
+        body: JSON.stringify({user:{
           email: this.state.email,
-          password: this.state.password
-      }),
+          password: this.state.password,
+      }}),
       }
-    )
-    console.log(response)
-    if (response.ok) {
-      this.props.navigation.navigate('Posts')
-       return
-    }
-    const errMessage = await response.text()
-    this.setState({err: errMessage}) 
-  
+    ).then(resp => resp.json())
+    
+    .then(resp => {
+      
+      //  if (resp.token) {
+      //   AsyncStorage.setItem('token', resp.token)
+      //   console.log('bilo sta')
+      //  this.props.navigation.navigate('Posts')
+      //  } else {
+      //    this.setState({error: resp.errors})
+      //    } 
+    })
+   this.props.navigation.navigate('Posts')
   }
   
 render() {
     return (
       <View>
       <Text style={styles.contentContainer1}>Hello from LogIn</Text>
-      <Text>{this.state.err}</Text>
-      <Text>{this.state.email}</Text>
-      <Text>{this.state.password}</Text>
+      <Text>{this.state.error}</Text>  
       <TextInput style={[styles.contentInput, styles.contentContainer]} keyboardType='email-address' onChangeText={this.handleEmailChange} value={this.state.email}  placeholder="E-mail" />
       <TextInput style={[styles.contentInput, styles.contentContainer]} secureTextEntry={true} onChangeText={this.handlePasswordChange}
       value={this.state.password} placeholder="Password" />

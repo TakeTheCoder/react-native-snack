@@ -14,5 +14,5 @@ export default createSwitchNavigator({
   HomeScreen: HomeScreen,
   LogIn: LogIn,
   SignUp: SignUp,
-  Posts: Posts,
+  Posts: Posts
 });

@@ -1,11 +1,10 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import LogedInNavigator from './navigation/LogedInNavigator';
 const isLogedIn = false;
-
-
+// AsyncStorage.getItem('token').then(token => {console.log(token)})
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
