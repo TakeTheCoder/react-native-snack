@@ -42,20 +42,17 @@ export default class LogInScreen extends React.Component {
       return resp.json()
       })
     .then((resp) => {
-      console.warn(resp);
+      console.log(resp);
       if (resp.errors){
         this.setState({loginMistake: true})
       } else{
-        let token = JSON.stringify(resp.token);
-        console.warn(token)
-        AsyncStorage.setItem('userToken', token);
-
-
+        AsyncStorage.setItem('userToken', resp.token).then((token) => {
           this.props.navigation.navigate('App')
+        })
       }
-    }).then(() => console.warn() )
+    })
     .catch((error) => {
-      console.warn(error)
+      console.log(error)
     })
   }
 

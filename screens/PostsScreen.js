@@ -28,7 +28,7 @@ export default class PostsScreen extends React.Component{
         return resp.json();
       })
       .then(resp => {
-        console.warn(resp)
+        console.log(resp)
         this.setState({
           posts: resp
         })
@@ -41,13 +41,21 @@ export default class PostsScreen extends React.Component{
   }
   
   render(){
+    let newState = [ ...this.state.posts ]
+    const newPost = this.props.navigation.getParam('newPost');
+    if (newPost !== undefined){
+      newState.push(newPost);
+  
+    }
     return(
       <ScrollView style={styles.container}>
+        <Text>You want to add another post? Click here:</Text>
+        <Button onPress={() => {this.props.navigation.navigate('NewPost')}} title="Add a New Post"/>
         <Text>Here are your posts:</Text>
         <FlatList 
         
-        data={this.state.posts}
-        renderItem={({item}) => <TouchableOpacity onPress={(e) => { this.props.navigation.navigate('Post', {post: item})}}><Text key={item.id} style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>}
+        data={newState}
+        renderItem={({item}) => <TouchableOpacity keyExtractor={item.id} onPress={(e) => { this.props.navigation.navigate('Post', {postId: item.id})}}><Text  style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>}
         />
       </ScrollView>
     )

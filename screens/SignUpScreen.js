@@ -18,7 +18,7 @@ export default class SignUpScreen extends React.Component {
       password_confirmation: '',
       first_name: '',
       last_name: '',
-      signupMistake: false,
+      errors: []
     }
   }
   handleInputChange(text, field){
@@ -47,10 +47,11 @@ export default class SignUpScreen extends React.Component {
     .then((resp) => {
       console.warn(resp);
       if (resp.errors){
-        this.setState({signupMistake: true})
+        this.setState({ errors: resp.errors})
       } else{
-          AsyncStorage.setItem('userToken', resp.token);
-          this.props.navigation.navigate('LogIn', {newUserLogIn: true})
+          AsyncStorage.setItem('userToken', resp.token).then((token) => {
+            this.props.navigation.navigate('LogIn', {newUserLogIn: true})  
+          })
       }  
     })
     .catch((error) => {
@@ -59,11 +60,10 @@ export default class SignUpScreen extends React.Component {
   }
 
   render(){
-    let massage = 'Fill this form to sign up:';
-    (this.state.signupMistake) ? massage = 'Ups, seem like you made a mistake. Try again' : massage
     return (
       <View style={styles.container}>
-        <Text> {massage} </Text>
+        <Text> {this.state.errors} </Text>
+        <Text> Fill this form to sign up: </Text>
         <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' textContentType='emailAddress' onChangeText={(text) => {this.handleInputChange(text, 'email')}}/>
         <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password')}}/>
         <TextInput style={styles.textInput} placeholder="Password confirmation" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleInputChange(text, 'password_confirmation')}}/>

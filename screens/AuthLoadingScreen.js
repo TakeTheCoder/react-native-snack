@@ -14,21 +14,16 @@ export default class AuthLoadingScreen extends React.Component {
     this.checkToken();
   }
 
-  // Fetch the token from storage then navigate to our appropriate place
-  //checkToken = fetch("https://jquery-test-api-auth.herokuapp.com", {
-    //dataType: 'json',
-    //headers:{
-    //"Authentication": `Bearer ${ AsyncStorage.getItem('userToken')}`
-    //} 
-  //})
-  checkToken = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
+  checkToken() {
+    AsyncStorage.getItem('userToken').then((token) => {
+      this.props.navigation.navigate(token ? 'App' : 'Auth')
+    })
     
 
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-  };
+    
+  }
 
   // Render any loading content that you like here
   render() {
