@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AsyncStorage,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,7 +18,12 @@ export default class PostsScreen extends React.Component{
   }
 
   componentWillMount(){
-    fetch("https://jquery-test-api-auth.herokuapp.com/posts")
+    AsyncStorage.getItem('userToken').then((token) => {
+      fetch("https://jquery-test-api-auth.herokuapp.com/posts", {
+        headers: {
+          "Authentication": `Bearer ${ token }`
+        }
+      })
       .then(resp => {
         return resp.json();
       })
@@ -30,6 +36,8 @@ export default class PostsScreen extends React.Component{
       .catch(error => {
         console.log(error);
       })
+    })
+    
   }
   
   render(){
@@ -39,7 +47,7 @@ export default class PostsScreen extends React.Component{
         <FlatList 
         
         data={this.state.posts}
-        renderItem={({item}) => <Text style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text>}
+        renderItem={({item}) => <TouchableOpacity onPress={(e) => { this.props.navigation.navigate('Post', {post: item})}}><Text key={item.id} style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>}
         />
       </ScrollView>
     )
