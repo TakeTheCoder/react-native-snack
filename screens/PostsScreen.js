@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   FlatList,
+  View,
 } from 'react-native';
 
 export default class PostsScreen extends React.Component{
@@ -39,6 +40,30 @@ export default class PostsScreen extends React.Component{
     })
     
   }
+
+  handleDeletePost(postId){
+    AsyncStorage.getItem('userToken').then((token) => {
+      fetch(`https://jquery-test-api-auth.herokuapp.com/posts/${postId}`, {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authentication": `Bearer ${ token }`
+        }
+      }).then((resp) => {
+        if (resp.ok) {
+          let newPostsArray = this.state.posts.filter((post) => {
+            return post.id !== postId
+          })
+          this.setState({posts: newPostsArray})
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    })
+    
+  }
   
   render(){
     let newState = [ ...this.state.posts ]
@@ -55,7 +80,12 @@ export default class PostsScreen extends React.Component{
         <FlatList 
         
         data={newState}
-        renderItem={({item}) => <TouchableOpacity keyExtractor={item.id} onPress={(e) => { this.props.navigation.navigate('Post', {postId: item.id})}}><Text  style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>}
+        keyExtractor={(item, index) => item.key}
+        renderItem={({item}) => 
+        <View style={styles.inline}>
+          <TouchableOpacity onPress={(e) => { this.props.navigation.navigate('Post', {postId: item.id})}}><Text  style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={(e) => {this.handleDeletePost(item.id)}} ><Text>X</Text></TouchableOpacity>
+        </View>} 
         />
       </ScrollView>
     )
@@ -70,5 +100,9 @@ const styles = StyleSheet.create({
   },
   flatListStyleItem: {
     fontSize: 25,
+  },
+  inline: {
+    alignItems: 'flex-start',
+    flexDirection:'row',
   }
 })
