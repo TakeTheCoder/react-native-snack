@@ -9,8 +9,10 @@ import {
   FlatList,
   View,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { allPosts } from './../actions/postActions';
 
-export default class PostsScreen extends React.Component{
+class PostsScreen extends React.Component{
   constructor(props){
     super(props);
     this.state = {
@@ -19,26 +21,7 @@ export default class PostsScreen extends React.Component{
   }
 
   componentWillMount(){
-    AsyncStorage.getItem('userToken').then((token) => {
-      fetch("https://jquery-test-api-auth.herokuapp.com/posts", {
-        headers: {
-          "Authentication": `Bearer ${ token }`
-        }
-      })
-      .then(resp => {
-        return resp.json();
-      })
-      .then(resp => {
-        console.log(resp)
-        this.setState({
-          posts: resp
-        })
-      })
-      .catch(error => {
-        console.log(error);
-      })
-    })
-    
+    this.props.allPosts();
   }
 
   handleDeletePost(postId){
@@ -66,12 +49,13 @@ export default class PostsScreen extends React.Component{
   }
   
   render(){
-    let newState = [ ...this.state.posts ]
-    const newPost = this.props.navigation.getParam('newPost');
-    if (newPost !== undefined){
-      newState.push(newPost);
+    // let newState = [ ...this.props.posts ];
+    console.log(this.props.posts)
+    // const newPost = this.props.navigation.getParam('newPost');
+    // if (newPost !== undefined){
+    //   newState.push(newPost);
   
-    }
+    // }
     return(
       <ScrollView style={styles.container}>
         <Text>You want to add another post? Click here:</Text>
@@ -79,7 +63,7 @@ export default class PostsScreen extends React.Component{
         <Text>Here are your posts:</Text>
         <FlatList 
         
-        data={newState}
+        data={this.props.posts}
         keyExtractor={(item, index) => item.key}
         renderItem={({item}) => 
         <View style={styles.inline}>
@@ -91,6 +75,15 @@ export default class PostsScreen extends React.Component{
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    posts: state.post.items
+  }
+}
+
+export default connect(mapStateToProps, { allPosts })(PostsScreen);
+
 
 const styles = StyleSheet.create({
   container: {

@@ -8,46 +8,34 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { newPost } from './../actions/postActions';
 
-export default class LogInScreen extends React.Component {
+class NewPostScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      title: '',
-      body: '',
+      post: {
+        title: '',
+        body: '',
+      },
       error: ''
     }
   }
 
   handleChangeInput(text, field){
-    this.setState({[field]: text})
+    let newState = {...this.state}
+    newState.post[field] = text
+    this.setState({newState})
   }
 
   handleNewPost(){
-    let data = JSON.stringify({
+    this.props.newPost(this.state.post);
+    this.setState({
       post: {
-        title: this.state.title,
-        body: this.state.body
+        title: "",
+        body: ""
       }
-    })
-    AsyncStorage.getItem('userToken').then((token) => {
-      fetch("https://jquery-test-api-auth.herokuapp.com/posts", {
-        method: "POST",
-        mode: "cors",
-        headers:{
-          "Content-Type": "application/json; charset=utf-8",
-          "Authentication": `Bearer ${ token }`
-        },
-        body: data
-      }).then((resp) => resp.json())
-      .then((resp) => {
-        console.log(resp)
-        
-        this.props.navigation.navigate('Posts', {newPost: resp})
-        
-      }).catch((error) => {
-        console.log(error)
-      })
     })
   }
 
@@ -66,6 +54,12 @@ export default class LogInScreen extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {}
+}
+
+export default connect(mapStateToProps, { newPost })(NewPostScreen);
 
 const styles = StyleSheet.create({
   container: {

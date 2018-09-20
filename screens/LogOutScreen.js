@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Button, AsyncStorage } from 'react-native';
 
 
-export default class SettingsScreen extends React.Component {
+export default class LogOutScreen extends React.Component {
   constructor(props){
     super(props);
     this.logOut();

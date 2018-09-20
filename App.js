@@ -1,8 +1,9 @@
 import React from 'react';
 import {Provider} from 'react-redux';
+import store from './store';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
+import AppWithNavigationState from './navigation/AppWithNavigationState';
 import HomeScreen from './screens/HomeScreen';
 
 export default class App extends React.Component {
@@ -18,11 +19,14 @@ export default class App extends React.Component {
           onError={this._handleLoadingError}
           onFinish={this._handleFinishLoading}
         />
+
       );
     } else {
       return (
         <View style={styles.container}>
-           <AppNavigator />
+          <Provider store={store}>
+            <AppWithNavigationState />
+          </Provider>
         </View>
       );
     }
