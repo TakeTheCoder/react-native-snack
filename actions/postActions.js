@@ -1,4 +1,4 @@
-import { ALL_POSTS, NEW_POST } from './types';
+import { ALL_POSTS, NEW_POST, DELETE_POST } from './types';
 import apiFetch from './../api';
 import {NavigationActions} from 'react-navigation';
 
@@ -38,4 +38,22 @@ export const newPost = (post) => dispatch => {
       })
     }
   })
+}
+
+export const deletePost = (postId) => dispatch => {
+  apiFetch(`/posts/${postId}`, 'DELETE')
+    .then(resp => {
+      console.log(resp)
+      if(resp.ok){
+        dispatch({
+          type: DELETE_POST,
+          payload: postId
+        })
+      } else {
+        console.log(resp)
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
 }

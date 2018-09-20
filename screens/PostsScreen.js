@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { allPosts } from './../actions/postActions';
+import { allPosts, deletePost } from './../actions/postActions';
 
 class PostsScreen extends React.Component{
   constructor(props){
@@ -24,30 +24,7 @@ class PostsScreen extends React.Component{
     this.props.allPosts();
   }
 
-  handleDeletePost(postId){
-    AsyncStorage.getItem('userToken').then((token) => {
-      fetch(`https://jquery-test-api-auth.herokuapp.com/posts/${postId}`, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authentication": `Bearer ${ token }`
-        }
-      }).then((resp) => {
-        if (resp.ok) {
-          let newPostsArray = this.state.posts.filter((post) => {
-            return post.id !== postId
-          })
-          this.setState({posts: newPostsArray})
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    })
-    
-  }
-  
+
   render(){
     // let newState = [ ...this.props.posts ];
     console.log(this.props.posts)
@@ -68,7 +45,7 @@ class PostsScreen extends React.Component{
         renderItem={({item}) => 
         <View style={styles.inline}>
           <TouchableOpacity onPress={(e) => { this.props.navigation.navigate('Post', {postId: item.id})}}><Text  style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={(e) => {this.handleDeletePost(item.id)}} ><Text>X</Text></TouchableOpacity>
+          <TouchableOpacity onPress={(e) => {this.props.deletePost(item.id)}} ><Text>X</Text></TouchableOpacity>
         </View>} 
         />
       </ScrollView>
@@ -82,7 +59,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, { allPosts })(PostsScreen);
+export default connect(mapStateToProps, { allPosts, deletePost })(PostsScreen);
 
 
 const styles = StyleSheet.create({

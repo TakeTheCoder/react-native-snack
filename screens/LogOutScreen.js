@@ -5,7 +5,7 @@ import { Text, Button, AsyncStorage } from 'react-native';
 export default class LogOutScreen extends React.Component {
   constructor(props){
     super(props);
-    this.logOut();
+    this.logOut()
   }
 
   logOut(){
