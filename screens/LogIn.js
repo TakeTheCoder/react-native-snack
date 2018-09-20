@@ -1,11 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, Button, TextInput, View, AsyncStorage } from 'react-native';
-
-
 export default class LogIn extends React.Component {
-  static navigationOptions = {
-     header: 'Neki tekst',
-  };
+  
 
   state={
     email: '',
@@ -25,30 +21,33 @@ export default class LogIn extends React.Component {
 
 
 
-
   handleLogIn() {
-    
+    console.log(this.state)
    fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
       { method: 'POST',
+        mode: 'cors',
         headers: {'content-type':'application/json'},
         body: JSON.stringify({user:{
           email: this.state.email,
           password: this.state.password,
       }}),
       }
-    ).then(resp => resp.json())
-    
-    .then(resp => {
-      
-      //  if (resp.token) {
-      //   AsyncStorage.setItem('token', resp.token)
-      //   console.log('bilo sta')
-      //  this.props.navigation.navigate('Posts')
-      //  } else {
-      //    this.setState({error: resp.errors})
-      //    } 
+    ).then(resp => {
+      return resp.json()
+    }).then(resp => {
+      console.log('ovo je dobro!')
+      console.log(resp)
+      if (resp.token) {
+        AsyncStorage.setItem('token', resp.token).then(token => {
+         this.props.navigation.navigate('Posts')
+        })
+      } else {
+        this.setState({error: resp.errors})
+      } 
+    }).catch(error => {
+      console.log('ovo je greska')
+      console.log(error)
     })
-   this.props.navigation.navigate('Posts')
   }
   
 render() {
