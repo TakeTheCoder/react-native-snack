@@ -66,3 +66,32 @@ export const logout = (user) => dispatch => {
     }
   })
 }
+
+export const signup = (user) => dispatch => {
+  dispatch({
+    type: LOADING
+  })
+  apiFetch('/auth/register', 'POST', {
+    user: user
+  })
+  .then(resp => {
+    console.log(resp)
+    if (resp.ok){
+      resp.json().then(user => {
+        dispatch({
+          type: SIGNUP_SUCCESS,
+        })
+        dispatch(
+          NavigationActions.navigate({routeName: 'LogIn', params: {newUserLogIn: true}})
+        )
+      })
+    } else {
+      resp.json().then(resp => {
+        dispatch({
+          type: SIGNUP_FAILED,
+          payload: resp.errors
+        })
+      })
+    }
+  })
+}

@@ -8,56 +8,29 @@ import {
   Button,
   TextInput,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { signup } from './../actions/userActions';
 
-export default class SignUpScreen extends React.Component {
+class SignUpScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      email: '', 
-      password: '',
-      password_confirmation: '',
-      first_name: '',
-      last_name: '',
+      user: {
+        email: '', 
+        password: '',
+        password_confirmation: '',
+        first_name: '',
+        last_name: '',
+      },
       errors: []
     }
   }
   handleInputChange(text, field){
-    this.setState({[field]: text})
+    let newState = {...this.state};
+    newState.user[field] = text;
+    this.setState({newState});
   }
 
-  handleSignUp(){
-    let data = JSON.stringify({
-      user: {
-        email: this.state.email,
-        password: this.state.password,
-        password_confirmation: this.state.password_confirmation,
-        first_name: this.state.first_name,
-        last_name: this.state.last_name
-      }
-    });
-    
-    fetch('https://jquery-test-api-auth.herokuapp.com/auth/register',{
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: data,
-    }).then((resp) => resp.json())
-    .then((resp) => {
-      console.warn(resp);
-      if (resp.errors){
-        this.setState({ errors: resp.errors})
-      } else{
-          AsyncStorage.setItem('userToken', resp.token).then((token) => {
-            this.props.navigation.navigate('LogIn', {newUserLogIn: true})  
-          })
-      }  
-    })
-    .catch((error) => {
-      console.warn(error)
-    })
-  }
 
   render(){
     return (
@@ -72,7 +45,7 @@ export default class SignUpScreen extends React.Component {
         <TextInput style={styles.textInput} placeholder="Last Name" placeholderTextColor='#ffffff' onChangeText={(text) => {this.handleInputChange(text, 'last_name')}}/>
 
 
-        <TouchableOpacity style={styles.button} onPress={() => {this.handleSignUp()}}>
+        <TouchableOpacity style={styles.button} onPress={() => {this.props.signup(this.state.user)}}>
           <Text style={styles.buttonText} >Sign up</Text>
         </TouchableOpacity>
 
@@ -83,14 +56,22 @@ export default class SignUpScreen extends React.Component {
             onPress={() => this.props.navigation.navigate('LogIn')}
           />
         </View>
-        
-        
-       
       </View>
     )
   }
-
 }
+
+const mapStateToProps = state => {
+  return {
+    errors: state.user.loginErrors,
+    isAuthenticated: state.user.isAuthenticated,
+    isLoading: state.user.isLoading
+  }
+}
+
+export default connect(mapStateToProps, {
+  signup
+})(SignUpScreen)
 
 const styles = StyleSheet.create({
   container: {

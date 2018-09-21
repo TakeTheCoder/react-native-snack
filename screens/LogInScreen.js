@@ -29,7 +29,6 @@ class LogInScreen extends React.Component {
     let newState = {...this.state};
     newState.user[field] = text;
     this.setState({newState});
-    console.log(this.state.user)
   }
 
   render(){

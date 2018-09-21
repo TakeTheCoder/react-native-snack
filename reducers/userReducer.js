@@ -15,6 +15,12 @@ export default (state = initialState, action) => {
       ...state,
       isLoading: true,
     }
+    case SIGNUP_SUCCESS:
+      return {
+        ...state,
+        loginErrors: [],
+        isLoading: false
+      }
     case LOGIN_SUCCESS:
       return {
         ...state,
