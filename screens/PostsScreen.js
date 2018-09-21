@@ -16,7 +16,6 @@ export default class PostsScreen extends React.Component {
       return resp.json()
     })
     .then(resp => {
-      console.log(resp)
       this.setState({posts: resp})
     })
     .catch(error => {
@@ -25,19 +24,30 @@ export default class PostsScreen extends React.Component {
   }
 
 render() {
+  let newPosts = [... this.state.posts]
+  const newPost = this.props.navigation.getParam('newPost')
+  if (newPost !== undefined) {
+      newPosts.unshift(newPost);
+    }
     return (
       <View>
         <ScrollView>
           <TouchableOpacity
           style={styles.button}
-          onPress={this.onPress}
+          onPress={() => {this.props.navigation.navigate('NewPost')}}
           >
           <Text style={styles.textPostStyle}> Dodaj Post </Text>
         </TouchableOpacity>
           <Text style={styles.contentContainer1}>Hello from Posts</Text>
           <FlatList
-            data={this.state.posts}
-            renderItem={({item}) => <Text style={styles.listStyle}> <Text>br:</Text> {item.id, this.props.navigation.navigate('PostScreen')}, {item.title}, {item.body} </Text>}
+            data={newPosts}
+            keyExtractor={(item, index) => item.id}
+            renderItem={({item}) => 
+            <View style={styles.postStyle}>
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate('Post', {postId: item.id})}}> <Text style={styles.listStyle}> <Text>br:</Text> {item.id}, {item.title}, {item.body} </Text></TouchableOpacity>
+             <TouchableOpacity onPress= {() => {this.props.detlePost(item.id)}}><Text> X</Text> </TouchableOpacity>
+             </View>
+             }
             />
         </ScrollView>
       </View>
@@ -69,4 +79,8 @@ const styles = StyleSheet.create({
     color:'white',
     fontWeight: 'bold',
   },
+  postStyle: {
+    flexDirection:'row', 
+    flexWrap:'wrap'
+  }
 })

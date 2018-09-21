@@ -22,7 +22,6 @@ export default class LogIn extends React.Component {
 
 
   handleLogIn() {
-    console.log(this.state)
    fetch('https://jquery-test-api-auth.herokuapp.com/auth/login', 
       { method: 'POST',
         mode: 'cors',
@@ -35,8 +34,6 @@ export default class LogIn extends React.Component {
     ).then(resp => {
       return resp.json()
     }).then(resp => {
-      console.log('ovo je dobro!')
-      console.log(resp)
       if (resp.token) {
         AsyncStorage.setItem('token', resp.token).then(token => {
          this.props.navigation.navigate('Posts')
@@ -45,7 +42,6 @@ export default class LogIn extends React.Component {
         this.setState({error: resp.errors})
       } 
     }).catch(error => {
-      console.log('ovo je greska')
       console.log(error)
     })
   }

@@ -5,6 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import PostsScreen from '../screens/PostsScreen';
+import PostScreen from '../screens/PostScreen';
+import NewPostScren from '../screens/NewPostScreen';
 import LogOutScreen from '../screens/LogOutScreen';
 
 const HomeStack = createStackNavigator({
@@ -27,6 +29,8 @@ HomeStack.navigationOptions = {
 
 const PostsStack = createStackNavigator({
   Posts: PostsScreen,
+  Post: PostScreen,
+  NewPost: NewPostScren
 });
 
 PostsStack.navigationOptions = {

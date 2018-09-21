@@ -39,7 +39,6 @@ export default class SignUp extends React.Component {
 
 
   handleSignUp() {
-    console.log(this.state)
     fetch('https://jquery-test-api-auth.herokuapp.com/auth/register', 
       { method: 'POST',
         mode: 'cors',
@@ -55,18 +54,14 @@ export default class SignUp extends React.Component {
     ).then(resp => {
       return resp.json()
     }).then(resp => {
-      console.log('ovo je dobro!')
-      console.log(resp)
       this.props.navigation.navigate('LogIn')
     }).catch(error => {
-      console.log('ovo je greska')
       console.log(error)
     })
   }    
    
 
 render() {
-   console.log('Ucitala se stranica')
     return (
       <View>
       <Text style={styles.contentContainer1}>Hello from SignUp</Text>

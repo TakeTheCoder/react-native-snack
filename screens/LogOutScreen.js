@@ -14,7 +14,7 @@ export default class LogOut extends React.Component {
     fetch('https://jquery-test-api-auth.herokuapp.com/auth/logout', 
       { method: 'DELETE',
         headers: {
-          'content-type':'application/json',
+          'Content-Type':'application/json',
           'Authentication': `Bearer ${token}`
         },
       }
