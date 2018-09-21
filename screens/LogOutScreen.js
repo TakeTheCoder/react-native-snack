@@ -1,41 +1,16 @@
 import React from 'react';
 import { Text, Button, AsyncStorage } from 'react-native';
+import { connect } from 'react-redux';
+import { logout } from './../actions/userActions';
 
 
-export default class LogOutScreen extends React.Component {
+class LogOutScreen extends React.Component {
   constructor(props){
     super(props);
-    this.logOut()
+    this.props.logout();
   }
 
-  logOut(){
 
-
-    AsyncStorage.getItem('userToken').then((token) => {
-      fetch("https://jquery-test-api-auth.herokuapp.com/auth/logout", {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authentication": `Bearer ${ token }`
-        }
-      })
-      .then((resp) => {
-      
-        if (resp.ok) {
-          AsyncStorage.removeItem('userToken').then((token) => {
-            this.props.navigation.navigate('AuthLoading')
-          })
-        } else {
-          console.log(resp)
-        }
-        
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    })
-  }
 
 
   render() {
@@ -45,3 +20,15 @@ export default class LogOutScreen extends React.Component {
     
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    errors: state.user.loginErrors,
+    isAuthenticated: state.user.isAuthenticated,
+    isLoading: state.user.isLoading,
+  }
+}
+
+export default connect(mapStateToProps, {
+  logout
+})(LogOutScreen)

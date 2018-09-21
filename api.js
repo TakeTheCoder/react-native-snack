@@ -11,7 +11,6 @@ const apiFetch = (path = "", method = "GET", data) => {
   };
 
   return AsyncStorage.getItem('userToken').then(token => {
-    console.log(token)
     if (token) { options.headers["Authentication"] = `Bearer ${token}` }
     if (data && Object.keys(data).length) options["body"] = JSON.stringify(data);
 

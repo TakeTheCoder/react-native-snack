@@ -24,15 +24,16 @@ class PostsScreen extends React.Component{
     this.props.allPosts();
   }
 
+  handlePostPress(post){
+    //if (post.user_id === this.props.user.id){ preusmeri na post}
+    // 
+  }
+
 
   render(){
-    // let newState = [ ...this.props.posts ];
-    console.log(this.props.posts)
-    // const newPost = this.props.navigation.getParam('newPost');
-    // if (newPost !== undefined){
-    //   newState.push(newPost);
-  
-    // }
+
+
+
     return(
       <ScrollView style={styles.container}>
         <Text>You want to add another post? Click here:</Text>
@@ -44,7 +45,7 @@ class PostsScreen extends React.Component{
         keyExtractor={(item, index) => item.key}
         renderItem={({item}) => 
         <View style={styles.inline}>
-          <TouchableOpacity onPress={(e) => { this.props.navigation.navigate('Post', {postId: item.id})}}><Text  style={styles.flatListStyleItem}>{item.id} - {item.title}: {item.body}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={(e) => {this.handlePostPress(item)}}><Text  style={styles.flatListStyleItem}>{item.id} - created by user {item.user_id} - {item.title}: {item.body}</Text></TouchableOpacity>
           <TouchableOpacity onPress={(e) => {this.props.deletePost(item.id)}} ><Text>X</Text></TouchableOpacity>
         </View>} 
         />

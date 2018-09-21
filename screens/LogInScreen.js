@@ -7,56 +7,40 @@ import {
   View,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
+  StatusBar
 } from 'react-native';
+import { connect } from 'react-redux';
+import { login } from './../actions/userActions';
 
-export default class LogInScreen extends React.Component {
+class LogInScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      email: '',
-      password: '',
+      user: {
+        email: '',
+        password: '',
+      },
       loginMistake: false,
     }
   }
 
   handleChangeInput(text, field){
-    this.setState({[field]: text}) 
-  }
-
-  handleLogIn(){
-    let data = JSON.stringify({
-      user: {
-        email: this.state.email,
-        password: this.state.password
-      }
-    })
-    
-    fetch('https://jquery-test-api-auth.herokuapp.com/auth/login',{
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: data,
-    }).then((resp) => {
-      return resp.json()
-      })
-    .then((resp) => {
-      console.log(resp);
-      if (resp.errors){
-        this.setState({loginMistake: true})
-      } else{
-        AsyncStorage.setItem('userToken', resp.token).then((token) => {
-          this.props.navigation.navigate('App')
-        })
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    let newState = {...this.state};
+    newState.user[field] = text;
+    this.setState({newState});
+    console.log(this.state.user)
   }
 
   render(){
+    if (this.props.isLoading) {
+      return (
+        <View>
+          <ActivityIndicator />
+          <StatusBar barStyle="default" />
+        </View>
+      )
+    }
     
     let massage = 'Log in here';
     (this.props.navigation.getParam('newUserLogIn')) ? massage = 'You successufuly signed up, now you can log in' : massage;
@@ -67,7 +51,7 @@ export default class LogInScreen extends React.Component {
         <TextInput style={styles.textInput} placeholder="E-mail" placeholderTextColor='#ffffff' keyboardType='email-address' autoCapitalize="none" textContentType='emailAddress' onChangeText={(text) => {this.handleChangeInput(text, 'email')} } />
         <TextInput style={styles.textInput} placeholder="Password" placeholderTextColor='#ffffff' secureTextEntry={true} onChangeText={(text) => {this.handleChangeInput(text, 'password')}} />
 
-        <TouchableOpacity style={styles.button} onPress={() => {this.handleLogIn()}}>
+        <TouchableOpacity style={styles.button} onPress={() => {this.props.login(this.state.user)}}>
           <Text style={styles.buttonText} >Log in</Text>
         </TouchableOpacity>
 
@@ -83,6 +67,18 @@ export default class LogInScreen extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    errors: state.user.loginErrors,
+    isAuthenticated: state.user.isAuthenticated,
+    isLoading: state.user.isLoading
+  }
+}
+
+export default connect(mapStateToProps, {
+  login
+})(LogInScreen)
 
 const styles = StyleSheet.create({
   container: {
